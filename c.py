@@ -10,12 +10,6 @@ pygame.init()
 id_jogador = sys.argv[2]
 id_inimigo = None
 
-'''
-0 preto
-48640 verde
-56540 azul
-15790320 cinza
-'''
 ##################################### COMUNICAÇÃO #####################################
 
 def print_name_server_object_list():
@@ -72,21 +66,25 @@ displayH = 800
 
 # definição de cores
 back = (154,255,208)
-vermelho = (225, 0, 0)
 verde = (0, 190, 0)
-azul = (0, 0, 255)
+#azul = (0, 0, 255)
 lago = (0, 220, 220)
 branco = (255, 255, 255)
 cinza = (240, 240, 240)
 preto = (0, 0, 0)
+
+'''
+0 preto
+48640 verde
+56540 lago
+15790320 cinza
+'''
 
 f_chat = pygame.font.Font(None, 25)
 #f_chat2 = pygame.font.SysFont('arial', 25)
 
 casas = [26,88,150,212,274,336,398,460,522,584]
 jogo_inicial = [[[' ']*3 for c in range(10)] for d in range (10)]
-# gera matriz quadrada de ordem 10, cada índice com 3 'argumentos'
-#jogo_atual = [[[' ']*3 for c in range(10)] for d in range (10)]
 
 screen = pygame.display.set_mode((displayW,displayH),0,32)
 screen.fill(cinza)
@@ -156,12 +154,9 @@ def cria_matriz_inicial():
         for j in range(2,8):
             if j == 2 or j == 3 or j == 6 or j ==7:
                 jogo_inicial[i][j][0] = 'X'
-
-    #mostraMatriz(jogo_inicial)
     valores_matriz()
 
 def valores_matriz(): # adicionar posicao do quadrado
-    #global jogo_atual
     global jogo_inicial
     for i in range(10):
         for j in range(10):
@@ -169,11 +164,8 @@ def valores_matriz(): # adicionar posicao do quadrado
             jogo_inicial[i][j][1] = casas[i]
             jogo_inicial[i][j][2] = casas[j]
     print("inicial")
-    #mostraMatriz(jogo_inicial)
-    #jogo_atual = jogo_inicial[:]
 
 def descobre_quadrado(x,y):
-    #global jogo_atual
     global jogo_inicial
     a = x - ((x-25)%62) + 1
     b = y - ((y-25)%62) + 1
@@ -305,7 +297,6 @@ def move_esquerda(x,y,cor):
 ################################################################################
 
 if __name__ == '__main__':
-
     '''
     sys.argv[1] IP
     sys.argv[2] ID
@@ -319,9 +310,6 @@ if __name__ == '__main__':
         id_inimigo = combate.idInimigo('%s' % id_jogador)
     print("inimigo %s" % id_inimigo)
 
-    #combate.enviar_mensagem(id_jogador, 'varios nadas')
-    #print(combate.receber_mensagem(id_jogador))
-
     cria_matriz_inicial()
     desenha_tabuleiro(25,25,62)
     desenha_desistir(700,25,75)
@@ -329,8 +317,6 @@ if __name__ == '__main__':
 
     name = ""
     while True:
-        #combate.enviar_mensagem(id_jogador, 'oi do %s' %id_jogador)
-        #print(combate.receber_mensagem(id_jogador))
         combate.enviar_mensagem(id_jogador, 'start')
         tratar_mensagem(combate.receber_mensagem(id_jogador))
         key=pygame.key.get_pressed()
@@ -340,7 +326,6 @@ if __name__ == '__main__':
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x,y = pygame.mouse.get_pos()
-                #print("X E Y ",x,y)
                 descobre_quadrado(x,y)
             elif event.type == KEYDOWN:
                 if event.unicode.isalpha():
@@ -390,7 +375,6 @@ if __name__ == '__main__':
                     combate.muda_turno(id_inimigo)
                     combate.enviar_mensagem(id_jogador,protocolo(2,'mover,direita,%d,%d' %(x,y)))
 
-
         pygame.display.update()
         desenha_chat(705,400,248)
         block = f_chat.render(name, True, (0, 0, 0))
@@ -403,4 +387,4 @@ if __name__ == '__main__':
             continue
     except:
         print("Programa do jogador encerrado")
-        client_socket.close()   
+        client_socket.close()
