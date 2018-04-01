@@ -10,6 +10,12 @@ pygame.init()
 id_jogador = sys.argv[1]
 id_inimigo = None
 
+'''
+0 preto
+48640 verde
+56540 azul
+15790320 cinza
+'''
 ##################################### COMUNICAÇÃO #####################################
 
 def print_name_server_object_list():
@@ -178,7 +184,6 @@ def descobre_quadrado(x,y):
         #mostraMatriz(jogo_atual)
        
     elif a > 25 and a < 585 and b > 25 and b < 585:
-        print("vou mover")
         movimentacao(a,b)
 
 
@@ -187,7 +192,7 @@ baixo = False
 cima = False
 esquerda = False
 direita = False
-def movimentacao(a,b): # ainda nao funciona
+def movimentacao(a,b): # ainda nao funciona 100%. Seta as flags de movimentacao
     global jogo_inicial
     global peca
     global baixo
@@ -240,6 +245,8 @@ def move_baixo(x,y):
         screen.blit(textsurface,(a+31,b+93))
         jogo_inicial[casas.index(b)][casas.index(a)],jogo_inicial[casas.index(b)+1][casas.index(a)] = jogo_inicial[casas.index(b)+1][casas.index(a)], jogo_inicial[casas.index(b)][casas.index(a)]  # por algum motivo está substituindo x e y
         baixo = False
+        combate.muda_turno(id_jogador)
+        combate.muda_turno(id_inimigo)
         #mostraMatriz(jogo_inicial)
 
 def move_cima(x,y):
@@ -256,6 +263,8 @@ def move_cima(x,y):
         screen.blit(textsurface,(a+31,b-31))
         jogo_inicial[casas.index(b)][casas.index(a)],jogo_inicial[casas.index(b)-1][casas.index(a)] = jogo_inicial[casas.index(b)-1][casas.index(a)], jogo_inicial[casas.index(b)][casas.index(a)]  # por algum motivo está substituindo x e y
         cima = False
+        combate.muda_turno(id_jogador)
+        combate.muda_turno(id_inimigo)
 
 def move_direita(x,y): # algo errado com a atualização da matriz
     a = x - ((x-25)%62) + 1
@@ -270,6 +279,8 @@ def move_direita(x,y): # algo errado com a atualização da matriz
         print("ant",jogo_inicial[casas.index(b)][casas.index(a)],"prox",jogo_inicial[casas.index(b)+1][casas.index(a)])
         jogo_inicial[casas.index(b)][casas.index(a)],jogo_inicial[casas.index(b)][casas.index(a)+1] = jogo_inicial[casas.index(b)][casas.index(a)+1], jogo_inicial[casas.index(b)][casas.index(a)]  # por algum motivo está substituindo x e y
         direita = False
+        combate.muda_turno(id_jogador)
+        combate.muda_turno(id_inimigo)
 
 def move_esquerda(x,y):
     a = x - ((x-25)%62) + 1
@@ -283,6 +294,8 @@ def move_esquerda(x,y):
         screen.blit(textsurface,(a-31,b+31))
         jogo_inicial[casas.index(b)][casas.index(a)],jogo_inicial[casas.index(b)][casas.index(a)-1] = jogo_inicial[casas.index(b)][casas.index(a)-1], jogo_inicial[casas.index(b)][casas.index(a)]  # por algum motivo está substituindo x e y
         esquerda = False
+        combate.muda_turno(id_jogador)
+        combate.muda_turno(id_inimigo)
 
 ################################################################################
 
@@ -328,26 +341,24 @@ if __name__ == '__main__':
                     combate.enviar_mensagem(id_jogador, name)
                     name = ""
                     combate.enviar_mensagem(id_inimigo, name)
-                    print("TURNO? ",combate.meu_turno(id_jogador))
-                    combate.muda_turno(id_jogador)
-                    print("TURNO? ",combate.meu_turno(id_jogador))
                 elif event.key == K_SPACE:
                     name += " "
             elif key[pygame.K_DOWN]:
                 print("DOWN")
-                if peca[0] != '' and peca[0] != 'B' and peca[0] != 'F' and baixo: move_baixo(x,y)
+                print("TURNO? ",combate.meu_turno(id_jogador))
+                if peca[0] != '' and peca[0] != 'B' and peca[0] != 'F' and combate.meu_turno(id_jogador) and baixo: move_baixo(x,y)
             elif key[pygame.K_UP]:
                 print("UP")
-                print("cima ",cima)
-                if peca[0] != '' and peca[0] != 'B' and peca[0] != 'F' and cima:
-                    print("cliquei")
-                    move_cima(x,y)
+                print("TURNO? ",combate.meu_turno(id_jogador))
+                if peca[0] != '' and peca[0] != 'B' and peca[0] != 'F' and combate.meu_turno(id_jogador) and cima: move_cima(x,y)
             elif key[pygame.K_LEFT]:
                 print("LEFT")
-                if peca != '' and esquerda: move_esquerda(x,y)
+                print("TURNO? ",combate.meu_turno(id_jogador))
+                if peca[0] != '' and peca[0] != 'B' and peca[0] != 'F' and combate.meu_turno(id_jogador) and esquerda: move_esquerda(x,y)
             elif key[pygame.K_RIGHT]:
                 print("RIGHT")
-                if peca != '' and direita: move_direita(x,y)
+                print("TURNO? ",combate.meu_turno(id_jogador))
+                if peca[0] != '' and peca[0] != 'B' and peca[0] != 'F' and combate.meu_turno(id_jogador) and direita: move_direita(x,y)
 
         pygame.display.update()
         desenha_chat(705,400,248)
