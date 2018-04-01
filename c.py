@@ -89,8 +89,7 @@ def desenha_tabuleiro(dist, bordaSup, tam):
         for j in range(10):
             pygame.draw.rect(screen, cor_quadrado(i,j), (dist+tam*i,bordaSup+tam*j,tam,tam))
             pygame.draw.rect(screen, branco, (dist+tam*i,bordaSup+tam*j,tam,tam),1)
-            cor = branco if id_jogador == '1' else preto
-            textsurface = f_chat.render(str(jogo_inicial[j][i][0]), True, cor) # por algum motivo está invertendo
+            textsurface = f_chat.render(str(jogo_inicial[j][i][0]), True, branco) # por algum motivo está invertendo
             screen.blit(textsurface,(dist+tam*i+tam/2,bordaSup+tam*j+tam/2))
 
 def desenha_chat(dist, bordaSup, tam):
@@ -163,7 +162,7 @@ def descobre_quadrado(x,y):
     print("b=%f"% b)
 
     pxarray = pygame.PixelArray(screen)
-    print("corzinha ",pxarray[a+10, b-30])
+    #print("corzinha ",pxarray[a+10, b-30])
 
     if a >= 646 and a <= 832 and b >= 26 and b <= 88: # desistir
         print("desistir")
@@ -179,6 +178,7 @@ def descobre_quadrado(x,y):
         #mostraMatriz(jogo_atual)
        
     elif a > 25 and a < 585 and b > 25 and b < 585:
+        print("vou mover")
         movimentacao(a,b)
 
 
@@ -200,23 +200,22 @@ def movimentacao(a,b): # ainda nao funciona
 
     pxarray = pygame.PixelArray(screen)
 
-    if id_jogador == '1': # Variáveis globais estão fazendo passar por cima do azul. CONSERTAR!
-        print("corzinha ",pxarray[a+10, b-30])
-        if pxarray[a, b+70] == 48640 or pxarray[a, b+70] == 15790320: # cinza ou verde
-            print("para baixo")
-            baixo = True
-        
-        if pxarray[a+10, b-30] == 48640 or pxarray[a+10, b-30] == 15790320:
-            print("para cima")
-            cima = True
+    print("corzinha ",pxarray[a, b])
+    if (id_jogador == '1' and pxarray[a, b+70] == 48640) or (id_jogador == '2' and pxarray[a, b+70] == 0) or pxarray[a, b+70] == 15790320: # cinza ou verde
+        print("para baixo")
+        baixo = True
+       
+    if (id_jogador == '1' and pxarray[a+10, b-30] == 48640) or (id_jogador == '2' and pxarray[a+10, b-30] == 0) or pxarray[a+10, b-30] == 15790320:
+        print("para cima")
+        cima = True
 
-        if pxarray[a+70, b+10] == 48640 or pxarray[a+70, b+10] == 15790320:
-            print("para direita")
-            direita = True
+    if pxarray[a+70, b+10] == 48640 or pxarray[a+70, b+10] == 15790320:
+        print("para direita")
+        direita = True
 
-        if pxarray[a-70, b+10] == 48640 or pxarray[a-70, b+10] == 15790320:
-            print("para esquerda")
-            esquerda = True
+    if pxarray[a-70, b+10] == 48640 or pxarray[a-70, b+10] == 15790320:
+        print("para esquerda")
+        esquerda = True
 
 def pode_mover(a,b):
     print("pode mover?")
@@ -231,11 +230,11 @@ def move_baixo(x,y):
     global baixo
     a = x - ((x-25)%62) + 1
     b = y - ((y-25)%62) + 1
-    if id_jogador == '1' and pode_mover(a,b+62):
+    if pode_mover(a,b+62):
         print("if baixo")
         pygame.draw.rect(screen, cinza, (a,b,62,62))
         pygame.draw.rect(screen, branco, (a,b,62,62),1)
-        pygame.draw.rect(screen, preto, (a,b+62,62,62))
+        pygame.draw.rect(screen, preto if id_jogador == '1' else verde, (a,b+62,62,62))
         pygame.draw.rect(screen, branco, (a,b+62,62,62),1)
         textsurface = f_chat.render(str(jogo_inicial[casas.index(b)][casas.index(a)][0]), True, branco) # por algum motivo está invertendo
         screen.blit(textsurface,(a+31,b+93))
@@ -248,10 +247,10 @@ def move_cima(x,y):
     global cima
     a = x - ((x-25)%62) + 1
     b = y - ((y-25)%62) + 1
-    if id_jogador == '1' and pode_mover(a,b-62):
+    if pode_mover(a,b-62):
         pygame.draw.rect(screen, cinza, (a,b,62,62))
         pygame.draw.rect(screen, branco, (a,b,62,62),1)
-        pygame.draw.rect(screen, preto, (a,b-62,62,62))
+        pygame.draw.rect(screen, preto if id_jogador == '1' else verde, (a,b-62,62,62))
         pygame.draw.rect(screen, branco, (a,b-62,62,62),1)
         textsurface = f_chat.render(str(jogo_inicial[casas.index(b)][casas.index(a)][0]), True, branco) # por algum motivo está invertendo
         screen.blit(textsurface,(a+31,b-31))
@@ -261,10 +260,10 @@ def move_cima(x,y):
 def move_direita(x,y): # algo errado com a atualização da matriz
     a = x - ((x-25)%62) + 1
     b = y - ((y-25)%62) + 1
-    if id_jogador == '1' and pode_mover(a+62,b):
+    if pode_mover(a+62,b):
         pygame.draw.rect(screen, cinza, (a,b,62,62))
         pygame.draw.rect(screen, branco, (a,b,62,62),1)
-        pygame.draw.rect(screen, preto, (a+62,b,62,62))
+        pygame.draw.rect(screen, preto if id_jogador == '1' else verde, (a+62,b,62,62))
         pygame.draw.rect(screen, branco, (a+62,b,62,62),1)
         textsurface = f_chat.render(str(jogo_inicial[casas.index(b)][casas.index(a)][0]), True, branco) # por algum motivo está invertendo
         screen.blit(textsurface,(a+93,b+31))
@@ -275,10 +274,10 @@ def move_direita(x,y): # algo errado com a atualização da matriz
 def move_esquerda(x,y):
     a = x - ((x-25)%62) + 1
     b = y - ((y-25)%62) + 1
-    if id_jogador == '1' and pode_mover(a-62,b):
+    if pode_mover(a-62,b):
         pygame.draw.rect(screen, cinza, (a,b,62,62))
         pygame.draw.rect(screen, branco, (a,b,62,62),1)
-        pygame.draw.rect(screen, preto, (a-62,b,62,62))
+        pygame.draw.rect(screen, preto if id_jogador == '1' else verde, (a-62,b,62,62))
         pygame.draw.rect(screen, branco, (a-62,b,62,62),1)
         textsurface = f_chat.render(str(jogo_inicial[casas.index(b)][casas.index(a)][0]), True, branco) # por algum motivo está invertendo
         screen.blit(textsurface,(a-31,b+31))
