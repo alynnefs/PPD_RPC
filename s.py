@@ -1,4 +1,5 @@
 import Pyro4
+import sys
 
 jogA = None
 jogB = None
@@ -74,12 +75,16 @@ class Combate(object):
             pass
         
 if __name__ == '__main__':
+    '''
+    sys.argv[1] IP
+    '''
+
     Pyro4.Daemon.serveSimple(
         {
             Combate: 'combate'
 
         },
-        host='localhost'
+        host = sys.argv[1]
     )
     #print("jogA %s" % jogA)
     #print("jogB %s" % jogB)

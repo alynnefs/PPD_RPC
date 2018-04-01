@@ -7,7 +7,7 @@ from pygame.locals import *
 
 pygame.init()
 
-id_jogador = sys.argv[1]
+id_jogador = sys.argv[2]
 id_inimigo = None
 
 '''
@@ -22,7 +22,7 @@ def print_name_server_object_list():
     """
     Use name_server function
     """
-    ns = Pyro4.locateNS(host='localhost')
+    ns = Pyro4.locateNS(host = sys.argv[1])
     print(ns.lookup('combate'))
     #print(ns.lookup('maker'))
     print(ns.list())
@@ -300,7 +300,13 @@ def move_esquerda(x,y):
 ################################################################################
 
 if __name__ == '__main__':
-    combate = Pyro4.Proxy("PYRONAME:combate@localhost")
+
+    '''
+    sys.argv[1] IP
+    sys.argv[2] ID
+    '''
+
+    combate = Pyro4.Proxy("PYRONAME:combate@%s" % sys.argv[1])
 
     id_jogador = combate.meuID('%s' % id_jogador)
     while id_inimigo == None:
