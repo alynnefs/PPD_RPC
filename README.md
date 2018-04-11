@@ -14,6 +14,8 @@
 
 ```python c.py 127.0.0.1 1``` e ```python c.py 127.0.0.1 2```
 
+Obs: trabalho incompleto. Um dia eu termino (:
+
 ## Dependências
 
 pygame
